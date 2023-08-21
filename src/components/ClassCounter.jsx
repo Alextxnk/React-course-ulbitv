@@ -1,6 +1,7 @@
 import React from 'react';
 
 class ClassCounter extends React.Component {
+   // это устаревший подход, функциональные компоненты и хуки намного удобнее 
    // в классовом компоненте нельзя использовать хуки
    constructor(props) {
       super(props);
