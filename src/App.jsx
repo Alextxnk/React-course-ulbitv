@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import Counter from './components/Counter';
 import ControlledInput from './components/ControlledInput';
 // import ClassCounter from './components/ClassCounter';
