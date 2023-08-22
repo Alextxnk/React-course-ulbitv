@@ -34,6 +34,10 @@ const App = () => {
       setPosts([...posts, newPost]);
    };
 
+   const removePost = (post) => {
+      setPosts(posts.filter((p) => p.id !== post.id));
+   };
+
    return (
       <div className='App'>
          {/* мы можем создавать сколько угодно счетчиков и все они будут работать независимо друг от друга */}
@@ -43,7 +47,15 @@ const App = () => {
          <ControlledInput />
          <Counter />
          {/* <ClassCounter /> */}
-         <PostList posts={posts} title='Посты про JS и TS' />
+         {posts.length !== 0 ? (
+            <PostList
+               remove={removePost}
+               posts={posts}
+               title='Посты про JS и TS'
+            />
+         ) : (
+            <h2 style={{ textAlign: 'center' }}>Посты не найдены</h2>
+         )}
       </div>
    );
 };
