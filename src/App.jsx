@@ -21,8 +21,7 @@ const App = () => {
       }
    ]);
 
-   const [title, setTitle] = useState('');
-   const [body, setBody] = useState('');
+   const [post, setPost] = useState({ title: '', body: '' });
 
    // с помощью хука useRef мы можем получать напрямую доступ к DOM-элементу
    // const bodyInputRef = useRef();
@@ -32,14 +31,8 @@ const App = () => {
       // console.log(title); // получаем из useState
       // console.log(bodyInputRef.current.value); // получаем из useRef
 
-      const newPost = {
-         id: Date.now(),
-         title,
-         body
-      };
-      console.log(newPost);
-
-      setPosts([...posts, newPost]);
+      setPosts([...posts, { ...post, id: Date.now() }]);
+      setPost({ title: '', body: '' });
    };
 
    return (
@@ -48,16 +41,20 @@ const App = () => {
          <form>
             {/* Управляемые компоненты */}
             <Input
-               value={title}
+               value={post.title}
                type='text'
                placeholder='Название поста'
-               onChange={(event) => setTitle(event.target.value)}
+               onChange={(event) =>
+                  setPost({ ...post, title: event.target.value })
+               }
             />
             <Input
-               value={body}
+               value={post.body}
                type='text'
                placeholder='Описание поста'
-               onChange={(event) => setBody(event.target.value)}
+               onChange={(event) =>
+                  setPost({ ...post, body: event.target.value })
+               }
             />
             {/* Неуправляемый/неконтролируемый компонент */}
             {/* <Input

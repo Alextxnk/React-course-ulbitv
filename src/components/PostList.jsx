@@ -8,7 +8,7 @@ const PostList = ({ posts, title }) => {
          {posts.map((post, index) => (
             <PostItem
                number={index + 1}
-               key={post.id}
+               key={index}
                post={post}
             />
          ))}
