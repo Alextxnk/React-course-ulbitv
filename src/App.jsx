@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import Counter from './components/Counter';
 import ControlledInput from './components/ControlledInput';
 // import ClassCounter from './components/ClassCounter';
@@ -6,6 +6,7 @@ import './styles/App.css';
 import PostList from './components/PostList';
 import PostForm from './components/PostForm';
 import Select from './components/UI/select/Select';
+import Input from './components/UI/input/Input';
 
 const App = () => {
    const [posts, setPosts] = useState([
@@ -32,6 +33,22 @@ const App = () => {
    }; */
 
    const [selectedSort, setSelectedSort] = useState('');
+   const [searchQuery, setSearchQuery] = useState('');
+
+   const sortedPosts = useMemo(() => {
+      // console.log('useMemo'); // вызывается в начале и потом ждет, когда потребуется сортровка
+      if (selectedSort) {
+         return [...posts].sort((a, b) =>
+            a[selectedSort].localeCompare(b[selectedSort])
+         );
+      }
+
+      return posts;
+   }, [selectedSort, posts]);
+
+   const sortedAndSearchedPosts = useMemo(() => {
+      return sortedPosts.filter((post) => post.title.toLowerCase().includes(searchQuery.toLowerCase()));
+   }, [searchQuery, sortedPosts]);
 
    const createPost = (newPost) => {
       setPosts([...posts, newPost]);
@@ -43,11 +60,11 @@ const App = () => {
 
    const sortPosts = (sort) => {
       setSelectedSort(sort);
-      // console.log(sort); // title | body
       // т.к. функция sort не возвращает новый отсортированный массив, а мутирует тот массив, к которому эта функция была применена
       // и состояние напрямую изменять нельзя, мы заспредим посты в новый массив и уже к нему применим функцию сортировки
+      // тоесть в данном случае мы мутируем копию массива и не мутируем состояние напрямую
+
       // localeCompare - эта функция предназначена для сравнения строк и чаще всего используется при сортировке
-      setPosts([...posts].sort((a, b) => a[sort].localeCompare(b[sort])));
    };
 
    return (
@@ -61,7 +78,14 @@ const App = () => {
          {/* <ClassCounter /> */}
          <div className=''>
             <hr style={{ margin: '15px 0' }} />
-            <h3>Фильтр</h3>
+            <h3>Поиск</h3>
+            <Input
+               value={searchQuery}
+               type='text'
+               onChange={(event) => setSearchQuery(event.target.value)}
+               placeholder='Поиск...'
+            />
+            <h3>Сортировка</h3>
             <Select
                value={selectedSort}
                onChange={sortPosts}
@@ -76,7 +100,7 @@ const App = () => {
          {posts.length !== 0 ? (
             <PostList
                remove={removePost}
-               posts={posts}
+               posts={sortedAndSearchedPosts}
                title='Посты про JS и TS'
             />
          ) : (
