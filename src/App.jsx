@@ -5,6 +5,7 @@ import ControlledInput from './components/ControlledInput';
 import './styles/App.css';
 import PostList from './components/PostList';
 import PostForm from './components/PostForm';
+import Select from './components/UI/select/Select';
 
 const App = () => {
    const [posts, setPosts] = useState([
@@ -30,12 +31,23 @@ const App = () => {
       setPost({ title: '', body: '' });
    }; */
 
+   const [selectedSort, setSelectedSort] = useState('');
+
    const createPost = (newPost) => {
       setPosts([...posts, newPost]);
    };
 
    const removePost = (post) => {
       setPosts(posts.filter((p) => p.id !== post.id));
+   };
+
+   const sortPosts = (sort) => {
+      setSelectedSort(sort);
+      // console.log(sort); // title | body
+      // т.к. функция sort не возвращает новый отсортированный массив, а мутирует тот массив, к которому эта функция была применена
+      // и состояние напрямую изменять нельзя, мы заспредим посты в новый массив и уже к нему применим функцию сортировки
+      // localeCompare - эта функция предназначена для сравнения строк и чаще всего используется при сортировке
+      setPosts([...posts].sort((a, b) => a[sort].localeCompare(b[sort])));
    };
 
    return (
@@ -47,6 +59,20 @@ const App = () => {
          <ControlledInput />
          <Counter />
          {/* <ClassCounter /> */}
+         <div className=''>
+            <hr style={{ margin: '15px 0' }} />
+            <h3>Фильтр</h3>
+            <Select
+               value={selectedSort}
+               onChange={sortPosts}
+               defaultValue='Сортировка по'
+               options={[
+                  { value: 'title', name: 'По названию' },
+                  { value: 'body', name: 'По описанию' }
+               ]}
+            />
+         </div>
+         {/* Условная отрисовка с помощью тернарного оператора */}
          {posts.length !== 0 ? (
             <PostList
                remove={removePost}
