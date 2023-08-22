@@ -24,8 +24,8 @@ const App = () => {
       <div className='App'>
          {/* мы можем создавать сколько угодно счетчиков и все они будут работать независимо друг от друга */}
          <form>
-            <input type="text" placeholder='Название поста' />
-            <input type="text" placeholder='Описание поста' />
+            <input type='text' placeholder='Название поста' />
+            <input type='text' placeholder='Описание поста' />
             <Button disabled>Создать пост</Button>
          </form>
          <ControlledInput />
