@@ -9,7 +9,7 @@ import PostFilter from './components/PostFilter';
 import Modal from './components/UI/modal/Modal';
 import Button from './components/UI/button/Button';
 import { usePosts } from './hooks/usePosts';
-import axios from 'axios';
+import PostService from './API/PostService';
 
 const App = () => {
    const [posts, setPosts] = useState([
@@ -30,9 +30,9 @@ const App = () => {
       }
    ]);
 
-   // с помощью хука useRef мы можем получать напрямую доступ к DOM-элементу
-   // const bodyInputRef = useRef();
-   /* const addNewPost = (event) => {
+   /* // с помощью хука useRef мы можем получать напрямую доступ к DOM-элементу
+   * // const bodyInputRef = useRef();
+   const addNewPost = (event) => {
       event.preventDefault(); // чтоб не обновлялась страница после отправки формы
       console.log(title); // получаем из useState
       console.log(bodyInputRef.current.value); // получаем из useRef
@@ -46,17 +46,16 @@ const App = () => {
    const sortedAndSearchedPosts = usePosts(posts, filter.sort, filter.query); // использовали кастомный хук
 
    const fetchPosts = async () => {
-      const response = await axios.get(
-         'https://jsonplaceholder.typicode.com/posts'
-      );
-      console.log(response.data);
-      setPosts(response.data);
+      const posts = await PostService.getAll(); // обращаемся к методу класса из API
+      setPosts(posts);
    };
 
+   // один раз во время загрузки страницы отрендерятся посты
    useEffect(() => {
-
-   }, []); // массив зависимостей пустой, для того чтобы функция отработала один раз 
-   // при использовании зависимостей - будет вызываться при любом изменении 
+      fetchPosts();
+   }, []);
+   // массив зависимостей пустой, для того чтобы функция отработала один раз
+   // при использовании зависимостей - будет вызываться при любом изменении, мы можем передавать сколько угодно зависимостей
 
    const createPost = (newPost) => {
       setPosts([...posts, newPost]);
@@ -89,7 +88,7 @@ const App = () => {
          <PostList
             remove={removePost}
             posts={sortedAndSearchedPosts}
-            title='Посты про JS и TS'
+            title='Посты'
          />
       </div>
    );
@@ -97,9 +96,8 @@ const App = () => {
 
 export default App;
 
-// function Counter2() {
-//    const [countObject, setCount] = useState({ count: 0 });
-//    в замыкании хранится дефолтное значение
+// const Counter2 = () => {
+//    const [countObject, setCount] = useState({ count: 0 }); // в замыкании хранится дефолтное значение
 
 //    const handleIncrement = () => {
 //       если нужно предыдущее значение - используем callback
@@ -107,10 +105,10 @@ export default App;
 //       setCount(count => ++count);
 //    };
 
-//    бесконечный цикл - вызовет ошибку
+//    бесконечный цикл - вызовет ошибку, т.к. каждый раз создается новая ссылка объекта
 //    useEffect(() => {
 //       setCount({ ...countObject, count: countObject.count });
-//    }, [countObject.count]);
+//    }, [countObject]); // [countObject.count] - обращаемся к примитиву, чтоб предотвратить ошибку
 
 //    return (
 //       <>
