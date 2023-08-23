@@ -64,14 +64,11 @@ const App = () => {
 
    const createPost = (newPost) => {
       setPosts([...posts, newPost]);
+      setModal(false); // закрываем модельное окно после добавления поста
    };
 
    const removePost = (post) => {
       setPosts(posts.filter((p) => p.id !== post.id));
-   };
-
-   const openModal = () => {
-      setModal(true);
    };
 
    return (
@@ -86,7 +83,7 @@ const App = () => {
          <Counter />
          {/* <ClassCounter /> */}
          <div className='create__btn'>
-            <Button onClick={openModal}>Новый пост</Button>
+            <Button onClick={() => setModal(true)}>Новый пост</Button>
          </div>
          <hr style={{ margin: '15px 0' }} />
          <PostFilter filter={filter} setFilter={setFilter} />
