@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Counter from './components/Counter';
 import ControlledInput from './components/ControlledInput';
 // import ClassCounter from './components/ClassCounter';
@@ -77,6 +77,7 @@ const App = () => {
             <Button onClick={() => setModal(true)}>Новый пост</Button>
             <Button onClick={fetchPosts}>GET Posts</Button>
          </div>
+         {/* <Counter2 /> */}
          <hr style={{ margin: '15px 0' }} />
          <PostFilter filter={filter} setFilter={setFilter} />
          <hr style={{ margin: '15px 0' }} />
@@ -90,3 +91,26 @@ const App = () => {
 };
 
 export default App;
+
+// function Counter2() {
+//    const [countObject, setCount] = useState({ count: 0 });
+//    в замыкании хранится дефолтное значение
+
+//    const handleIncrement = () => {
+//       если нужно предыдущее значение - используем callback
+//       setCount(count => ++count);
+//       setCount(count => ++count);
+//    };
+
+//    бесконечный цикл - вызовет ошибку
+//    useEffect(() => {
+//       setCount({ ...countObject, count: countObject.count });
+//    }, [countObject.count]);
+
+//    return (
+//       <>
+//          {countObject.count}
+//          <button onClick={Function}>Increment</button>
+//       </>
+//    );
+// }
