@@ -5,20 +5,24 @@ import ControlledInput from './components/ControlledInput';
 import './styles/App.css';
 import PostList from './components/PostList';
 import PostForm from './components/PostForm';
-import Select from './components/UI/select/Select';
-import Input from './components/UI/input/Input';
+import PostFilter from './components/PostFilter';
 
 const App = () => {
    const [posts, setPosts] = useState([
       {
          id: 1,
          title: 'JavaScript',
-         body: 'Description'
+         body: 'Desc'
       },
       {
          id: 2,
          title: 'TypeScript',
          body: 'Description'
+      },
+      {
+         id: 3,
+         title: 'Python',
+         body: 'Py Description'
       }
    ]);
 
@@ -32,23 +36,28 @@ const App = () => {
       setPost({ title: '', body: '' });
    }; */
 
-   const [selectedSort, setSelectedSort] = useState('');
-   const [searchQuery, setSearchQuery] = useState('');
+   const [filter, setFilter] = useState({ sort: '', query: '' });
 
    const sortedPosts = useMemo(() => {
-      // console.log('useMemo'); // вызывается в начале и потом ждет, когда потребуется сортровка
-      if (selectedSort) {
+      // console.log('useMemo'); // вызывается в начале и потом ждет, когда потребуется сортировка
+      // т.к. функция sort не возвращает новый отсортированный массив, а мутирует тот массив, к которому эта функция была применена,
+      // и состояние напрямую изменять нельзя, мы заспредим посты в новый массив и уже к нему применим функцию сортировки
+      // тоесть в данном случае мы мутируем копию массива и не мутируем состояние напрямую
+      // localeCompare - эта функция предназначена для сравнения строк и чаще всего используется при сортировке
+      if (filter.sort) {
          return [...posts].sort((a, b) =>
-            a[selectedSort].localeCompare(b[selectedSort])
+            a[filter.sort].localeCompare(b[filter.sort])
          );
       }
 
       return posts;
-   }, [selectedSort, posts]);
+   }, [filter.sort, posts]);
 
    const sortedAndSearchedPosts = useMemo(() => {
-      return sortedPosts.filter((post) => post.title.toLowerCase().includes(searchQuery.toLowerCase()));
-   }, [searchQuery, sortedPosts]);
+      return sortedPosts.filter((post) =>
+         post.title.toLowerCase().includes(filter.query.toLowerCase())
+      );
+   }, [filter.query, sortedPosts]);
 
    const createPost = (newPost) => {
       setPosts([...posts, newPost]);
@@ -56,15 +65,6 @@ const App = () => {
 
    const removePost = (post) => {
       setPosts(posts.filter((p) => p.id !== post.id));
-   };
-
-   const sortPosts = (sort) => {
-      setSelectedSort(sort);
-      // т.к. функция sort не возвращает новый отсортированный массив, а мутирует тот массив, к которому эта функция была применена
-      // и состояние напрямую изменять нельзя, мы заспредим посты в новый массив и уже к нему применим функцию сортировки
-      // тоесть в данном случае мы мутируем копию массива и не мутируем состояние напрямую
-
-      // localeCompare - эта функция предназначена для сравнения строк и чаще всего используется при сортировке
    };
 
    return (
@@ -76,36 +76,13 @@ const App = () => {
          <ControlledInput />
          <Counter />
          {/* <ClassCounter /> */}
-         <div className=''>
-            <hr style={{ margin: '15px 0' }} />
-            <h3>Поиск</h3>
-            <Input
-               value={searchQuery}
-               type='text'
-               onChange={(event) => setSearchQuery(event.target.value)}
-               placeholder='Поиск...'
-            />
-            <h3>Сортировка</h3>
-            <Select
-               value={selectedSort}
-               onChange={sortPosts}
-               defaultValue='Сортировка по'
-               options={[
-                  { value: 'title', name: 'По названию' },
-                  { value: 'body', name: 'По описанию' }
-               ]}
-            />
-         </div>
-         {/* Условная отрисовка с помощью тернарного оператора */}
-         {posts.length !== 0 ? (
-            <PostList
-               remove={removePost}
-               posts={sortedAndSearchedPosts}
-               title='Посты про JS и TS'
-            />
-         ) : (
-            <h2 style={{ textAlign: 'center' }}>Посты не найдены</h2>
-         )}
+         <hr style={{ margin: '15px 0' }} />
+         <PostFilter filter={filter} setFilter={setFilter} />
+         <PostList
+            remove={removePost}
+            posts={sortedAndSearchedPosts}
+            title='Посты про JS и TS'
+         />
       </div>
    );
 };
