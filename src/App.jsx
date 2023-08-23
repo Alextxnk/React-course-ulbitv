@@ -12,7 +12,7 @@ import { usePosts } from './hooks/usePosts';
 import PostService from './API/PostService';
 
 const App = () => {
-   const [posts, setPosts] = useState([
+   /* const postsArr = [
       {
          id: 1,
          title: 'JavaScript',
@@ -28,7 +28,7 @@ const App = () => {
          title: 'Python',
          body: 'Py Description'
       }
-   ]);
+   ]; */
 
    /* // с помощью хука useRef мы можем получать напрямую доступ к DOM-элементу
    * // const bodyInputRef = useRef();
@@ -40,14 +40,19 @@ const App = () => {
       setPost({ title: '', body: '' });
    }; */
 
+   const [posts, setPosts] = useState([]);
    const [filter, setFilter] = useState({ sort: '', query: '' });
    const [modal, setModal] = useState(false);
-
    const sortedAndSearchedPosts = usePosts(posts, filter.sort, filter.query); // использовали кастомный хук
+   const [isPostsLoading, setIsPostsLoading] = useState(false);
 
    const fetchPosts = async () => {
-      const posts = await PostService.getAll(); // обращаемся к методу класса из API
-      setPosts(posts);
+      setIsPostsLoading(true);
+      setTimeout(async () => {
+         const posts = await PostService.getAll(); // обращаемся к методу класса из API
+         setPosts(posts);
+         setIsPostsLoading(false);
+      }, 1000);
    };
 
    // один раз во время загрузки страницы отрендерятся посты
@@ -85,11 +90,15 @@ const App = () => {
          <hr style={{ margin: '15px 0' }} />
          <PostFilter filter={filter} setFilter={setFilter} />
          <hr style={{ margin: '15px 0' }} />
-         <PostList
-            remove={removePost}
-            posts={sortedAndSearchedPosts}
-            title='Посты'
-         />
+         {isPostsLoading ? (
+            <h1 style={{ textAlign: 'center' }}>Идет загрузка с сервера...</h1>
+         ) : (
+            <PostList
+               remove={removePost}
+               posts={sortedAndSearchedPosts}
+               title='Посты'
+            />
+         )}
       </div>
    );
 };
