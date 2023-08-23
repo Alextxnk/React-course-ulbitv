@@ -5,7 +5,7 @@ import Select from './UI/select/Select';
 const PostFilter = ({ filter, setFilter }) => {
    return (
       <div>
-         <h3>Поиск</h3>
+         <h3>Поиск по заголовкам</h3>
          <Input
             value={filter.query}
             type='text'
@@ -14,7 +14,7 @@ const PostFilter = ({ filter, setFilter }) => {
             }
             placeholder='Поиск...'
          />
-         <h3>Сортировка</h3>
+         <h3>Отсортировать</h3>
          <Select
             value={filter.sort}
             onChange={(selectedSort) =>

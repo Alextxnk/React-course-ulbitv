@@ -1,3 +1,5 @@
-.Select {
-   
+.select {
+   padding: 5px 15px;
+   margin: 10px 0;
+   border: 1px solid teal;
 }

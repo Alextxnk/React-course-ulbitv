@@ -9,8 +9,9 @@
    justify-content: center;
 }
 
-.App {
+.app {
    width: 800px;
+   margin-top:5px;
 }
 
 .post {
@@ -26,4 +27,8 @@
 .post__content,
 .post__btns {
    padding: 10px;
+}
+
+.create__btn {
+   margin-top: 10px;
 }

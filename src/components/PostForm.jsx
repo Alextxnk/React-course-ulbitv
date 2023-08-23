@@ -16,24 +16,29 @@ const PostForm = ({ create }) => {
    };
 
    return (
-      <form>
-         {/* Управляемые компоненты */}
-         <Input
-            value={post.title}
-            type='text'
-            placeholder='Название поста'
-            onChange={(event) =>
-               setPost({ ...post, title: event.target.value })
-            }
-         />
-         <Input
-            value={post.body}
-            type='text'
-            placeholder='Описание поста'
-            onChange={(event) => setPost({ ...post, body: event.target.value })}
-         />
-         <Button onClick={addNewPost}>Создать пост</Button>
-      </form>
+      <>
+         <h2>Создание поста</h2>
+         <form>
+            {/* Управляемые компоненты */}
+            <Input
+               value={post.title}
+               type='text'
+               placeholder='Название поста'
+               onChange={(event) =>
+                  setPost({ ...post, title: event.target.value })
+               }
+            />
+            <Input
+               value={post.body}
+               type='text'
+               placeholder='Описание поста'
+               onChange={(event) =>
+                  setPost({ ...post, body: event.target.value })
+               }
+            />
+            <Button onClick={addNewPost}>Создать пост</Button>
+         </form>
+      </>
    );
 };
 

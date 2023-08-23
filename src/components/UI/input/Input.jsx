@@ -3,7 +3,7 @@ import styles from './Input.module.css';
 
 // оборачиваем компонент в forwardRef
 const Input = forwardRef((props, ref) => {
-   return <input {...props} ref={ref} className={styles.Input} />;
+   return <input {...props} ref={ref} className={styles.input} />;
 });
 
 export default Input;

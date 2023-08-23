@@ -6,6 +6,8 @@ import './styles/App.css';
 import PostList from './components/PostList';
 import PostForm from './components/PostForm';
 import PostFilter from './components/PostFilter';
+import Modal from './components/UI/modal/Modal';
+import Button from './components/UI/button/Button';
 
 const App = () => {
    const [posts, setPosts] = useState([
@@ -37,6 +39,7 @@ const App = () => {
    }; */
 
    const [filter, setFilter] = useState({ sort: '', query: '' });
+   const [modal, setModal] = useState(false);
 
    const sortedPosts = useMemo(() => {
       // console.log('useMemo'); // вызывается в начале и потом ждет, когда потребуется сортировка
@@ -67,17 +70,27 @@ const App = () => {
       setPosts(posts.filter((p) => p.id !== post.id));
    };
 
+   const openModal = () => {
+      setModal(true);
+   };
+
    return (
-      <div className='App'>
+      <div className='app'>
+         <Modal visible={modal} setVisible={setModal}>
+            <PostForm create={createPost} />
+         </Modal>
          {/* мы можем создавать сколько угодно счетчиков и все они будут работать независимо друг от друга */}
-         <PostForm create={createPost} />
          {/* Неуправляемый/неконтролируемый компонент */}
          {/* <Input ref={bodyInputRef} type='text' placeholder='Описание поста' /> */}
          <ControlledInput />
          <Counter />
          {/* <ClassCounter /> */}
+         <div className='create__btn'>
+            <Button onClick={openModal}>Новый пост</Button>
+         </div>
          <hr style={{ margin: '15px 0' }} />
          <PostFilter filter={filter} setFilter={setFilter} />
+         <hr style={{ margin: '15px 0' }} />
          <PostList
             remove={removePost}
             posts={sortedAndSearchedPosts}

@@ -4,7 +4,7 @@ import styles from './Select.module.css';
 const Select = ({ options, defaultValue, value, onChange }) => {
    return (
       <select
-         className={styles.Select}
+         className={styles.select}
          value={value}
          onChange={(event) => onChange(event.target.value)}
       >

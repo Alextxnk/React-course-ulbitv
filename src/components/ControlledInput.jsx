@@ -6,7 +6,7 @@ const ControlledInput = () => {
 
    return (
       <div>
-         <h1>{value}</h1>
+         <h2>Управляемый инпут: {value}</h2>
          <Input
             type='text'
             value={value}
