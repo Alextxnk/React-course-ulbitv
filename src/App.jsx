@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import Counter from './components/Counter';
 import ControlledInput from './components/ControlledInput';
 // import ClassCounter from './components/ClassCounter';
@@ -8,6 +8,8 @@ import PostForm from './components/PostForm';
 import PostFilter from './components/PostFilter';
 import Modal from './components/UI/modal/Modal';
 import Button from './components/UI/button/Button';
+import { usePosts } from './hooks/usePosts';
+import axios from 'axios';
 
 const App = () => {
    const [posts, setPosts] = useState([
@@ -41,26 +43,15 @@ const App = () => {
    const [filter, setFilter] = useState({ sort: '', query: '' });
    const [modal, setModal] = useState(false);
 
-   const sortedPosts = useMemo(() => {
-      // console.log('useMemo'); // вызывается в начале и потом ждет, когда потребуется сортировка
-      // т.к. функция sort не возвращает новый отсортированный массив, а мутирует тот массив, к которому эта функция была применена,
-      // и состояние напрямую изменять нельзя, мы заспредим посты в новый массив и уже к нему применим функцию сортировки
-      // тоесть в данном случае мы мутируем копию массива и не мутируем состояние напрямую
-      // localeCompare - эта функция предназначена для сравнения строк и чаще всего используется при сортировке
-      if (filter.sort) {
-         return [...posts].sort((a, b) =>
-            a[filter.sort].localeCompare(b[filter.sort])
-         );
-      }
+   const sortedAndSearchedPosts = usePosts(posts, filter.sort, filter.query); // использовали кастомный хук
 
-      return posts;
-   }, [filter.sort, posts]);
-
-   const sortedAndSearchedPosts = useMemo(() => {
-      return sortedPosts.filter((post) =>
-         post.title.toLowerCase().includes(filter.query.toLowerCase())
+   const fetchPosts = async () => {
+      const response = await axios.get(
+         'https://jsonplaceholder.typicode.com/posts'
       );
-   }, [filter.query, sortedPosts]);
+      console.log(response.data);
+      setPosts(response.data);
+   };
 
    const createPost = (newPost) => {
       setPosts([...posts, newPost]);
@@ -84,6 +75,7 @@ const App = () => {
          {/* <ClassCounter /> */}
          <div className='create__btn'>
             <Button onClick={() => setModal(true)}>Новый пост</Button>
+            <Button onClick={fetchPosts}>GET Posts</Button>
          </div>
          <hr style={{ margin: '15px 0' }} />
          <PostFilter filter={filter} setFilter={setFilter} />
