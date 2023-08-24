@@ -12,6 +12,8 @@ import { usePosts } from './hooks/usePosts';
 import PostService from './API/PostService';
 import Loader from './components/UI/loader/Loader';
 import { useFetching } from './hooks/useFetching';
+import { getPageCount } from './utils/pages';
+import Pagination from './components/UI/pagination/Pagination';
 
 const App = () => {
    /* const postsArr = [
@@ -45,26 +47,25 @@ const App = () => {
    const [posts, setPosts] = useState([]);
    const [filter, setFilter] = useState({ sort: '', query: '' });
    const [modal, setModal] = useState(false);
-   const [totalCount, setTotalCount] = useState(0);
+   const [totalPages, setTotalPages] = useState(0);
    const [limit, setLimit] = useState(10);
    const [page, setPage] = useState(1);
 
    const sortedAndSearchedPosts = usePosts(posts, filter.sort, filter.query); // использовали кастомный хук
 
-   const [fetchPosts, isPostsLoading, postError] = useFetching(async () => {
-      const response = await PostService.getAll(limit, page); // обращаемся к методу класса из API
-      setPosts(response.data);
-      setTotalCount(response.headers['x-total-count']); // 100
-      console.log(
-         "🚀 ~ file: App.jsx:56 ~ const[fetchPosts,isPostsLoading,postError]=useFetching ~ response.headers['x-total-count']:",
-         response.headers['x-total-count']
-      );
-   });
+   const [fetchPosts, isPostsLoading, postError] = useFetching(
+      async (limit, page) => {
+         const response = await PostService.getAll(limit, page); // обращаемся к методу класса из API
+         setPosts(response.data);
+         const totalCount = response.headers['x-total-count']; // 100
+         setTotalPages(getPageCount(totalCount, limit));
+      }
+   );
 
    // один раз во время загрузки страницы отрендерятся посты
    useEffect(() => {
-      fetchPosts();
-   }, []);
+      fetchPosts(limit, page);
+   }, []); // [page]
    // массив зависимостей пустой, для того чтобы функция отработала один раз
    // при использовании зависимостей - будет вызываться при любом изменении, мы можем передавать сколько угодно зависимостей
 
@@ -75,6 +76,11 @@ const App = () => {
 
    const removePost = (post) => {
       setPosts(posts.filter((p) => p.id !== post.id));
+   };
+
+   const changePage = (page) => {
+      setPage(page);
+      fetchPosts(limit, page);
    };
 
    return (
@@ -114,6 +120,11 @@ const App = () => {
                title='Посты'
             />
          )}
+         <Pagination
+            page={page}
+            changePage={changePage}
+            totalPages={totalPages}
+         />
       </div>
    );
 };

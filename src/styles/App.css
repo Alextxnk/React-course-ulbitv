@@ -11,7 +11,7 @@
 
 .app {
    width: 800px;
-   margin-top: 10px;
+   margin: 15px 0;
 }
 
 .post {
@@ -49,4 +49,20 @@
 .post-exit-active {
    transform: translateX(-350px);
    transition: all 500ms ease-in;
+}
+
+.page__wrapper {
+   margin: 30px 0;
+   display: flex;
+}
+
+.page {
+   padding: 10px;
+   border: 1px solid teal;
+   cursor: pointer;
+}
+
+.page__current {
+   border: 2px solid orange;
+   font-weight: bold;
 }
