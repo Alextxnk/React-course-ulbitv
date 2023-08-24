@@ -10,6 +10,8 @@ import Modal from './components/UI/modal/Modal';
 import Button from './components/UI/button/Button';
 import { usePosts } from './hooks/usePosts';
 import PostService from './API/PostService';
+import Loader from './components/UI/loader/Loader';
+import { useFetching } from './hooks/useFetching';
 
 const App = () => {
    /* const postsArr = [
@@ -44,16 +46,11 @@ const App = () => {
    const [filter, setFilter] = useState({ sort: '', query: '' });
    const [modal, setModal] = useState(false);
    const sortedAndSearchedPosts = usePosts(posts, filter.sort, filter.query); // использовали кастомный хук
-   const [isPostsLoading, setIsPostsLoading] = useState(false);
 
-   const fetchPosts = async () => {
-      setIsPostsLoading(true);
-      setTimeout(async () => {
-         const posts = await PostService.getAll(); // обращаемся к методу класса из API
-         setPosts(posts);
-         setIsPostsLoading(false);
-      }, 1000);
-   };
+   const [fetchPosts, isPostsLoading, postError] = useFetching(async () => {
+      const posts = await PostService.getAll(); // обращаемся к методу класса из API
+      setPosts(posts);
+   });
 
    // один раз во время загрузки страницы отрендерятся посты
    useEffect(() => {
@@ -89,9 +86,18 @@ const App = () => {
          {/* <Counter2 /> */}
          <hr style={{ margin: '15px 0' }} />
          <PostFilter filter={filter} setFilter={setFilter} />
-         <hr style={{ margin: '15px 0' }} />
+         {/* <hr style={{ margin: '15px 0' }} /> */}
+         {postError && <h1>Произошла ошибка: {postError}</h1>}
          {isPostsLoading ? (
-            <h1 style={{ textAlign: 'center' }}>Идет загрузка с сервера...</h1>
+            <div
+               style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  marginTop: '50px'
+               }}
+            >
+               <Loader />
+            </div>
          ) : (
             <PostList
                remove={removePost}
