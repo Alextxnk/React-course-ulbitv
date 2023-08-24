@@ -45,11 +45,20 @@ const App = () => {
    const [posts, setPosts] = useState([]);
    const [filter, setFilter] = useState({ sort: '', query: '' });
    const [modal, setModal] = useState(false);
+   const [totalCount, setTotalCount] = useState(0);
+   const [limit, setLimit] = useState(10);
+   const [page, setPage] = useState(1);
+
    const sortedAndSearchedPosts = usePosts(posts, filter.sort, filter.query); // использовали кастомный хук
 
    const [fetchPosts, isPostsLoading, postError] = useFetching(async () => {
-      const posts = await PostService.getAll(); // обращаемся к методу класса из API
-      setPosts(posts);
+      const response = await PostService.getAll(limit, page); // обращаемся к методу класса из API
+      setPosts(response.data);
+      setTotalCount(response.headers['x-total-count']); // 100
+      console.log(
+         "🚀 ~ file: App.jsx:56 ~ const[fetchPosts,isPostsLoading,postError]=useFetching ~ response.headers['x-total-count']:",
+         response.headers['x-total-count']
+      );
    });
 
    // один раз во время загрузки страницы отрендерятся посты
