@@ -8,14 +8,21 @@ const PostIdPage = () => {
    const params = useParams();
 
    const [post, setPost] = useState({});
+   const [comments, setComments] = useState([]);
 
    const [fetchPostById, isLoading, error] = useFetching(async (id) => {
       const response = await PostService.getById(id);
       setPost(response.data);
    });
 
+   const [fetchComments, isComLoading, comError] = useFetching(async (id) => {
+      const response = await PostService.getCommentsByPostId(id);
+      setComments(response.data);
+   });
+
    useEffect(() => {
       fetchPostById(params.id);
+      fetchComments(params.id);
    }, []);
 
    return (
@@ -43,6 +50,25 @@ const PostIdPage = () => {
                      {post.id}. {post.title}
                   </strong>
                   <div>{post.body}</div>
+                  <div>
+                     <h3>Комментарии</h3>
+                     {isComLoading ? (<div
+               style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  marginTop: '18px'
+               }}
+            >
+               <Loader />
+            </div>) : (<div>
+               {comments.map((comment) => (
+                  <div>
+                     <h5>{comment.email}</h5>
+                     <div>{comment.body}</div>
+                  </div>
+               ))}
+            </div>)}
+                  </div>
                </div>
             </div>
          )}
