@@ -1,0 +1,18 @@
+.navbar {
+   heigth: 50px;
+   width: 100vw;
+   display: flex;
+   align-items: center;
+   padding: 10px 15px;
+   background: lightgray;
+}
+
+.navbar__links {
+   margin-left: auto;
+}
+
+.navbar__link {
+   text-decoration: none;
+   colour: black;
+   padding: 0 10px;
+}
