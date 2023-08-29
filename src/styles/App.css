@@ -11,7 +11,7 @@
 }
 
 .app {
-   width: 800px;
+   width: 900px;
    margin: 15px auto;
 }
 
@@ -25,9 +25,13 @@
    font-size: 20px;
 }
 
-.post__content,
+.post__content {
+   padding: 10px;
+}
+
 .post__btns {
    padding: 10px;
+   display: flex;
 }
 
 .create__btn {
@@ -66,4 +70,15 @@
 .page__current {
    border: 2px solid orange;
    font-weight: bold;
+}
+
+.container {
+   max-width: 1000px;
+   margin: 10px auto;
+}
+
+.link {
+   text-decoration: none;
+   colour: black;
+   padding: 0 10px;
 }
