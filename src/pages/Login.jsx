@@ -13,6 +13,7 @@ const Login = () => {
       event.preventDefault();
       setIsAuth(true);
       navigate('/posts');
+      localStorage.setItem('auth', 'true');
    };
 
    return (
