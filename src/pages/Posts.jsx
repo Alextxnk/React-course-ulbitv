@@ -55,7 +55,8 @@ const Posts = () => {
    const [fetchPosts, isPostsLoading, postError] = useFetching(
       async (limit, page) => {
          const response = await PostService.getAll(limit, page); // обращаемся к методу класса из API
-         setPosts(response.data);
+         // setPosts(response.data); // обычная подгрузка с пагинацией
+         setPosts([...posts, ...response.data]);
          const totalCount = response.headers['x-total-count']; // 100
          setTotalPages(getPageCount(totalCount, limit));
       }
@@ -102,23 +103,22 @@ const Posts = () => {
          <PostFilter filter={filter} setFilter={setFilter} />
          {/* <hr style={{ margin: '15px 0' }} /> */}
          {postError && <h1>Произошла ошибка: {postError}</h1>}
-         {isPostsLoading ? (
+         {isPostsLoading && (
             <div
                style={{
                   display: 'flex',
                   justifyContent: 'center',
-                  marginTop: '50px'
+                  marginTop: '18px'
                }}
             >
                <Loader />
             </div>
-         ) : (
-            <PostList
-               remove={removePost}
-               posts={sortedAndSearchedPosts}
-               title='Посты'
-            />
          )}
+         <PostList
+            remove={removePost}
+            posts={sortedAndSearchedPosts}
+            title='Посты'
+         />
          <Pagination
             page={page}
             changePage={changePage}
@@ -126,7 +126,7 @@ const Posts = () => {
          />
       </div>
    );
-}
+};
 
 export default Posts;
 
