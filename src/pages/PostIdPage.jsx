@@ -52,22 +52,26 @@ const PostIdPage = () => {
                   <div>{post.body}</div>
                   <div>
                      <h3>Комментарии</h3>
-                     {isComLoading ? (<div
-               style={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  marginTop: '18px'
-               }}
-            >
-               <Loader />
-            </div>) : (<div>
-               {comments.map((comment) => (
-                  <div>
-                     <h5>{comment.email}</h5>
-                     <div>{comment.body}</div>
-                  </div>
-               ))}
-            </div>)}
+                     {isComLoading ? (
+                        <div
+                           style={{
+                              display: 'flex',
+                              justifyContent: 'center',
+                              marginTop: '18px'
+                           }}
+                        >
+                           <Loader />
+                        </div>
+                     ) : (
+                        <div>
+                           {comments.map((comment) => (
+                              <div className='comment'>
+                                 <h5>{comment.email}</h5>
+                                 <div>{comment.body}</div>
+                              </div>
+                           ))}
+                        </div>
+                     )}
                   </div>
                </div>
             </div>
