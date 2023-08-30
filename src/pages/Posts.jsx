@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { usePosts } from '../hooks/usePosts';
 import { useFetching } from '../hooks/useFetching';
 import PostService from '../API/PostService';
@@ -13,6 +13,8 @@ import PostFilter from '../components/PostFilter';
 import Loader from '../components/UI/loader/Loader';
 import PostList from '../components/PostList';
 import Pagination from '../components/UI/pagination/Pagination';
+import { useObserver } from '../hooks/useObserver';
+import Select from '../components/UI/select/Select';
 
 const Posts = () => {
    /* const postsArr = [
@@ -52,6 +54,8 @@ const Posts = () => {
 
    const sortedAndSearchedPosts = usePosts(posts, filter.sort, filter.query); // использовали кастомный хук
 
+   const lastElement = useRef();
+
    const [fetchPosts, isPostsLoading, postError] = useFetching(
       async (limit, page) => {
          const response = await PostService.getAll(limit, page); // обращаемся к методу класса из API
@@ -62,10 +66,29 @@ const Posts = () => {
       }
    );
 
+   useObserver(lastElement, page < totalPages, isPostsLoading, () => {
+      setPage(page + 1);
+   });
+
+   /* useEffect(() => {
+      if (isPostsLoading) return;
+      if (observer.current) observer.current.disconnect();
+
+      const callback = (entries) => {
+         if (entries[0].isIntersecting && page < totalPages) {
+            console.log('callback');
+            setPage(page + 1);
+         }
+      };
+
+      observer.current = new IntersectionObserver(callback);
+      observer.current.observe(lastElement.current);
+   }, [isPostsLoading]); */
+
    // один раз во время загрузки страницы отрендерятся посты
    useEffect(() => {
       fetchPosts(limit, page);
-   }, []); // [page]
+   }, [page, limit]); // [page]
    // массив зависимостей пустой, для того чтобы функция отработала один раз
    // при использовании зависимостей - будет вызываться при любом изменении, мы можем передавать сколько угодно зависимостей
 
@@ -80,7 +103,7 @@ const Posts = () => {
 
    const changePage = (page) => {
       setPage(page);
-      fetchPosts(limit, page);
+      // fetchPosts(limit, page);
    };
 
    return (
@@ -100,7 +123,12 @@ const Posts = () => {
          </div>
          {/* <Counter2 /> */}
          <hr style={{ margin: '15px 0' }} />
-         <PostFilter filter={filter} setFilter={setFilter} />
+         <PostFilter
+            filter={filter}
+            setFilter={setFilter}
+            limit={limit}
+            setLimit={setLimit}
+         />
          {/* <hr style={{ margin: '15px 0' }} /> */}
          {postError && <h1>Произошла ошибка: {postError}</h1>}
          {isPostsLoading && (
@@ -119,6 +147,7 @@ const Posts = () => {
             posts={sortedAndSearchedPosts}
             title='Посты'
          />
+         <div ref={lastElement} style={{ height: 20, background: 'red' }} />
          <Pagination
             page={page}
             changePage={changePage}
